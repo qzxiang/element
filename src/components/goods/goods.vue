@@ -1,9 +1,9 @@
 <template>
   <div>
     <div class="goods">
-      <div class="menu-wrapper">
+      <div class="menu-wrapper" ref="menuWrapper">
         <ul>
-          <li v-for="(item,index) in goods" class="menu-item">
+          <li v-for="(item,index) in goods" class="menu-item" :class="{'current':currentIndex===index}">
           <span class="text border-1px">
             <span v-show="item.type>0" class="icon" :class="classMap[item.type]"></span>{{item.name}}
           </span>
@@ -26,8 +26,7 @@
                     <span class="count">月售{{food.sellCount}}份</span><span>好评率{{food.rating}}%</span>
                   </div>
                   <div class="price">
-                    <span class="now">￥{{food.price}}</span>
-                    <span class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
+                    <span class="now">￥{{food.price}}</span><span class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
                   </div>
                   <!-- <div class="cartcontrol-wrapper">
                     <cartcontrol @add="addFood" :food="food"></cartcontrol>
@@ -43,6 +42,7 @@
 </template>
 
 <script type="text/ecmascript-6">
+  import BScroll from 'better-scroll'
 
   const ERR_OK = 0;
 
@@ -55,7 +55,21 @@
     data() {
       return {
         goods: [],
+        listHeight: [],
+        scrollY: 0
       };
+    },
+    computed: {
+      currentIndex() {
+        for (let i = 0; i < this.listHeight.length; i++) {
+          let height1 = this.listHeight[i];
+          let height2 = this.listHeight[i + 1];
+          if (!height2 || (this.scrollY >= height1 && this.scrollY < height2)) {
+            return i;
+          }
+        }
+        return 0;
+      }
     },
     created() {
       this.classMap = ['decrease', 'discount', 'special', 'invoice', 'guarantee'];
@@ -64,9 +78,38 @@
         .then((response) => {
           if (response.data.errno === ERR_OK)  {
             this.goods = response.data.data;
-            console.log(this.goods);
+            this.$nextTick(() => {
+            this._initScroll();
+            this._calculateHeight();
+          });
           }
         })
+    },
+    methods: {
+      _initScroll() {
+        this.menuScroll = new BScroll(this.$refs.menuWrapper,{
+
+        });
+        this.foodsScroll = new BScroll(this.$refs.foodsWrapper, {
+          probeType: 3
+        });
+        this.foodsScroll.on('scroll', (pos) => {
+          // 判断滑动方向，避免下拉时分类高亮错误（如第一分类商品数量为1时，下拉使得第二分类高亮）
+          if (pos.y <= 0) {
+            this.scrollY = Math.abs(Math.round(pos.y));
+          }
+        });
+      },
+      _calculateHeight() {
+        let foodList = this.$refs.foodList;
+        let height = 0;
+        this.listHeight.push(height);
+        for (let i = 0; i < foodList.length; i++) {
+          let item = foodList[i];
+          height += item.clientHeight;
+          this.listHeight.push(height);
+        }
+      }
     }
   };
 </script>

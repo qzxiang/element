@@ -12,7 +12,7 @@
       <router-link to="/seller">商家</router-link>
     </div>
   </div>
-    <router-view></router-view> 
+    <router-view :seller="seller"></router-view>
   </div>
 </template>
 <script type="text/ecmascript-6">
@@ -31,11 +31,7 @@
            .then((response) => {
                  if (response.data.errno === ERR_OK)  {
                  this.seller = response.data.data;
-                 console.log(this.seller);
                  }
-           })
-           .catch((error) => {
-                 console.log(error);
            })
       },
       components: {
@@ -46,14 +42,14 @@
 <style lang="stylus" rel="stylesheet/stylus">
   @import "./common/stylus/mixin.styl"
 
-  .tab  
+  .tab
     display: flex
     width: 100%
     height: 40px
     line-height: 40px
     border-1px(rgba(7, 17, 27, 0.1))
     .tab-item
-      flex: 1 
+      flex: 1
       text-align: center
       & > a
         display: block

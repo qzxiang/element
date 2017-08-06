@@ -1,9 +1,9 @@
 <template>
-  <div>
     <div class="goods">
       <div class="menu-wrapper" ref="menuWrapper">
         <ul>
-          <li v-for="(item,index) in goods" class="menu-item" :class="{'current':currentIndex===index}">
+          <li v-for="(item,index) in goods" class="menu-item" :class="{'current':currentIndex===index}"
+          @click="selectMenu(index,$event)">
           <span class="text border-1px">
             <span v-show="item.type>0" class="icon" :class="classMap[item.type]"></span>{{item.name}}
           </span>
@@ -28,21 +28,23 @@
                   <div class="price">
                     <span class="now">￥{{food.price}}</span><span class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
                   </div>
-                  <!-- <div class="cartcontrol-wrapper">
-                    <cartcontrol @add="addFood" :food="food"></cartcontrol>
-                  </div> -->
+                  <div class="cartcontrol-wrapper">
+                    <cartcontrol :food="food"></cartcontrol>
+                  </div>
                 </div>
               </li>
             </ul>
           </li>
         </ul>
       </div>
+      <shopcart :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"></shopcart>
     </div>
-  </div>
 </template>
 
 <script type="text/ecmascript-6">
   import BScroll from 'better-scroll'
+  import shopcart from '../../components/shopcart/shopcart'
+  import cartcontrol from '../../components/cartcontrol/cartcontrol'
 
   const ERR_OK = 0;
 
@@ -86,11 +88,20 @@
         })
     },
     methods: {
+      selectMenu(index, event) {
+        if (!event._constructed) {
+          return;
+        }
+        let foodList = this.$refs.foodList;
+        let el = foodList[index];
+        this.foodsScroll.scrollToElement(el, 300);
+      },
       _initScroll() {
         this.menuScroll = new BScroll(this.$refs.menuWrapper,{
-
+          click: true
         });
         this.foodsScroll = new BScroll(this.$refs.foodsWrapper, {
+          click: true,
           probeType: 3
         });
         this.foodsScroll.on('scroll', (pos) => {
@@ -110,6 +121,10 @@
           this.listHeight.push(height);
         }
       }
+    },
+    components: {
+      shopcart,
+      cartcontrol
     }
   };
 </script>
@@ -216,4 +231,8 @@
               text-decoration: line-through
               font-size: 10px
               color: rgb(147, 153, 159)
+          .cartcontrol-wrapper
+            position: absolute
+            right: 0
+            bottom: 12px
 </style>

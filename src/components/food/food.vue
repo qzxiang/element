@@ -18,7 +18,7 @@
             <span class="now">￥{{food.price}}</span><span class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
           </div>
           <div class="cartcontrol-wrapper">
-            <cartcontrol :food="food"></cartcontrol>
+            <cartcontrol @add="addFood" :food="food"></cartcontrol>
           </div>
           <transition name="fade">
             <div @click.stop.prevent="addFirst" class="buy" v-show="!food.count || food.count === 0">加入购物车</div>
@@ -118,6 +118,9 @@
         } else {
           return type === this.selectType;
         }
+      },
+      addFood(target) {
+        this.$emit('add', target);
       },
       selectRating(type) {
         this.selectType = type;

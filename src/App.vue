@@ -12,31 +12,40 @@
       <router-link to="/seller">商家</router-link>
     </div>
   </div>
+    <keep-alive>
     <router-view :seller="seller"></router-view>
+    </keep-alive>
   </div>
 </template>
 <script type="text/ecmascript-6">
   import header from './components/header/header.vue'
+  import {urlParse} from './common/js/util';
 
   const ERR_OK = 0;
 
   export default {
-      data() {
-           return {
-                 seller: {}
+    data() {
+      return {
+        seller: {
+          id:(() =>{
+            let queryParam = urlParse();
+            return queryParam.id;
+          })()
+        }
       };
-      },
-      created() {
-      this.$axios.get('/api/seller')
-           .then((response) => {
-                 if (response.data.errno === ERR_OK)  {
-                 this.seller = response.data.data;
-                 }
-           })
-      },
-      components: {
-           'v-header': header
-      }
+    },
+    created() {
+      this.$axios.get('/api/seller?id=' + this.seller.id)
+      .then((response) => {
+        if (response.data.errno === ERR_OK)  {
+          //this.seller = response.data.data;
+          this.seller = Object.assign({}, this.seller, response.data.data);
+        }
+      })
+    },
+    components: {
+      'v-header': header
+    }
   }
 </script>
 <style lang="stylus" rel="stylesheet/stylus">

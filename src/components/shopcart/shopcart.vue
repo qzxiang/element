@@ -112,6 +112,11 @@
         });
         return total;
       },
+      payPrice() {
+        let total = 0;
+        total = this.totalPrice + this.deliveryPrice;
+        return total
+      },
       totalCount() {
         let count = 0;
         this.selectFoods.forEach((food) => {
@@ -222,7 +227,7 @@
         if (this.totalPrice < this.minPrice) {
           return;
         }
-        window.alert(`支付${this.totalPrice}元`);
+        window.alert(`支付${this.payPrice}元`);
       },
       addFood(target) {
         this.drop(target);

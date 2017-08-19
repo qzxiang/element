@@ -190,30 +190,30 @@
           font-weight: 700
           .text
             border-none()
-        .icon
-          display: inline-block
-          vertical-align: top
-          width: 12px
-          height: 12px
-          margin-right: 2px
-          background-size: 12px 12px
-          background-repeat: no-repeat
-          &.decrease
-            bg-image('decrease_3')
-          &.discount
-            bg-image('discount_3')
-          &.guarantee
-            bg-image('guarantee_3')
-          &.invoice
-            bg-image('invoice_3')
-          &.special
-            bg-image('special_3')
         .text
           display: table-cell
           width: 56px
           vertical-align: middle
           border-1px(rgba(7, 17, 27, 0.1))
           font-size: 12px
+          .icon
+            display: inline-block
+            vertical-align: top
+            width: 12px
+            height: 12px
+            margin-right: 2px
+            background-size: 12px 12px
+            background-repeat: no-repeat
+            &.decrease
+              bg-image('decrease_3')
+            &.discount
+              bg-image('discount_3')
+            &.guarantee
+              bg-image('guarantee_3')
+            &.invoice
+              bg-image('invoice_3')
+            &.special
+              bg-image('special_3')
     .foods-wrapper
       flex: 1
       .title
